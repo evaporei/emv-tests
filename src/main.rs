@@ -1,4 +1,5 @@
 use pcsc::{Context, Scope, Error, ShareMode, Protocols, MAX_BUFFER_SIZE};
+use emv_tests::APDUCommand;
 
 fn main() {
     let context = Context::establish(Scope::User).expect("Failed to establish context");
@@ -24,7 +25,15 @@ fn main() {
 
     // ASCII: (nul)ñ(eot)(nul)(nl)á(nul)(nul)(nul)b(etx)(soh)(np)(ack)(soh)
     // not that it means something...
-    let apdu_command = [0x00, 0xA4, 0x04, 0x00, 0x0A, 0xA0, 0x00, 0x00, 0x00, 0x62, 0x03, 0x01, 0x0C, 0x06, 0x01];
+    let apdu_data = [0x0A, 0xA0, 0x00, 0x00, 0x00, 0x62, 0x03, 0x01, 0x0C, 0x06];
+    let apdu_command: Vec<u8> = APDUCommand {
+        class: 0x00,
+        instruction: 0xA4,
+        parameter1: 0x04,
+        parameter2: 0x00,
+        data: apdu_data.to_vec(),
+        expected_response_bytes: 0x01,
+    }.into();
     println!("APDU command: {:?}", apdu_command);
 
     let mut apdu_response_buffer = [0; MAX_BUFFER_SIZE];
