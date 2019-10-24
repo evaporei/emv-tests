@@ -24,11 +24,11 @@ fn main() {
 
     // ASCII: (nul)ñ(eot)(nul)(nl)á(nul)(nul)(nul)b(etx)(soh)(np)(ack)(soh)
     // not that it means something...
-    let apdu_command = b"\x00\xa4\x04\x00\x0A\xA0\x00\x00\x00\x62\x03\x01\x0C\x06\x01";
+    let apdu_command = [0x00, 0xA4, 0x04, 0x00, 0x0A, 0xA0, 0x00, 0x00, 0x00, 0x62, 0x03, 0x01, 0x0C, 0x06, 0x01];
     println!("APDU command: {:?}", apdu_command);
 
     let mut apdu_response_buffer = [0; MAX_BUFFER_SIZE];
-    let apdu_response = card.transmit(apdu_command, &mut apdu_response_buffer).expect("Failed to transmit APDU command to card");
+    let apdu_response = card.transmit(&apdu_command, &mut apdu_response_buffer).expect("Failed to transmit APDU command to card");
 
     // [106, 30]
     // ASCII: j(rs)
